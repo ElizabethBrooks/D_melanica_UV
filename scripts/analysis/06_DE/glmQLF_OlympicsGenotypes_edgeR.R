@@ -40,7 +40,8 @@ args = commandArgs(trailingOnly=TRUE)
 #Set working directory
 #workingDir = args[1]
 #workingDir="/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis/Genotypes"
-workingDir="/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_28May2025/Genotypes"
+#workingDir="/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_28May2025/Genotypes"
+workingDir="/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_23Jan2026/Genotypes"
 #workingDir="/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/WGCNA_DEGenotypes"
 dir.create(workingDir)
 setwd(workingDir)
@@ -126,7 +127,7 @@ dev.off()
 png("glmQLF_plotPCA.png", units="in", width=5, height=4, res=300)
 par(mar=c(4.1, 4.1, 5.1, 0.1), xpd=TRUE)
 plotMDS(list, col=colors[sample_group], pch=points[sample_group], gene.selection="common")
-legend("top", inset=c(0,-0.5), legend=levels(sample_group), pch=points, col=colors, ncol=2)
+legend("top", inset=c(0,-0.47), legend=levels(sample_group), pch=points, col=colors, ncol=2)
 #legend("topleft", legend=levels(sample_group), pch=points, col=colors, ncol=2)
 dev.off()
 
@@ -164,10 +165,10 @@ colnames(fit)
 
 
 # testing explicit nested contrasts
-con.all.nest <- makeContrasts(treatment = (UV.LT1 + UV.HT2 + UV.HT2 + UV.HT1)/4
-                              - (VIS.LT1 + VIS.HT2 + VIS.HT2 + VIS.HT1)/4,
-                              tolerance = (UV.HT2 + UV.HT1 + VIS.HT2 + VIS.HT1)/4
-                              - (UV.LT1 + UV.HT2 + VIS.LT1 + VIS.HT2)/4,
+con.all.nest <- makeContrasts(treatment = (UV.LT_C + UV.LT_A + UV.HT_I + UV.HT_K)/4
+                              - (VIS.LT_C + VIS.LT_A + VIS.HT_I + VIS.HT_K)/4,
+                              tolerance = (UV.HT_I + UV.HT_K + VIS.HT_I + VIS.HT_K)/4
+                              - (UV.LT_C + UV.LT_A + VIS.LT_C + VIS.LT_A)/4,
                               levels=design)
 # treatment
 treat.anov.treatment <- glmTreat(fit, contrast=con.all.nest[,"treatment"], lfc=cutLFC)

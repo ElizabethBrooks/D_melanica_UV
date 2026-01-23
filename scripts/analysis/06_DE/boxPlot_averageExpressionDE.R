@@ -17,7 +17,7 @@ plotColors <- carto_pal(12, "Safe")
 plotColorSubset <- c("#D55E00", plotColors[6], plotColors[4], plotColors[5])
 
 #Set working directory
-workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_28May2025/Genotypes"
+workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_23Jan2026/Genotypes"
 setwd(workingDir)
 
 # import normalized gene count data for the Olympics
@@ -25,10 +25,10 @@ inFile <- "glmQLF_normalizedCounts_logTransformed.csv"
 inputList <- read.csv(file=inFile, row.names="gene")
 
 # set input gene ID
-#gene_ID <- "gene-LOC124188748"
+gene_ID <- "gene-LOC124188748"
 #gene_ID <- "gene-LOC124190117"
 #gene_ID <- "gene-LOC124202665"
-gene_ID <- "gene-LOC124193197"
+#gene_ID <- "gene-LOC124193197"
 
 # subset data for PHR (LOC124188748)
 normList <- inputList[gene_ID,]
@@ -45,9 +45,12 @@ exp_data <- data.frame(
 for (index in 1:ncol(normList)) {
   # add the expression data
   exp_data$expression[index] <- normList[,index]
-  exp_data$genotype[index] <- str_split_i(colnames(normList)[index], "_", 1)
-  exp_data$treatment[index] <- str_split_i(colnames(normList)[index], "_", 2)
-  exp_data$tolerance[index] <- str_sub(exp_data$genotype[index], end = -2)
+  exp_data$genotype[index] <- paste(
+    str_split_i(colnames(normList)[index], "_", 1),
+    str_split_i(colnames(normList)[index], "_", 2),
+    sep = "_")
+  exp_data$treatment[index] <- str_split_i(colnames(normList)[index], "_", 3)
+  exp_data$tolerance[index] <- str_sub(exp_data$genotype[index], end = -3)
 }
 
 # create a colored box plot for all genes

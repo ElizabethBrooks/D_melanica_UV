@@ -50,14 +50,22 @@ lnames2 = load(file = inFile)
 inFile <- paste(deDir, "glmQLF_normalizedCounts_logTransformed.csv", sep="/")
 #normList <- read.csv(file=inFile, row.names="gene")[ ,1:24]
 normList <- read.csv(file=inFile, row.names="gene")
-names(normList) <- c("HT1_VIS_Pool1", "HT1_VIS_Pool2", "HT1_VIS_Pool3",
-                     "HT1_UV_Pool1", "HT1_UV_Pool2", "HT1_UV_Pool3",
-                     "HT2_VIS_Pool1", "HT2_VIS_Pool2", "HT2_VIS_Pool3",
-                     "HT2_UV_Pool1", "HT2_UV_Pool2", "HT2_UV_Pool3",
-                     "LT1_VIS_Pool1", "LT1_VIS_Pool2", "LT1_VIS_Pool3",
-                     "LT1_UV_Pool1", "LT1_UV_Pool2", "LT1_UV_Pool3",
-                     "LT2_VIS_Pool1", "LT2_VIS_Pool2", "LT2_VIS_Pool3",
-                     "LT2_UV_Pool1", "LT2_UV_Pool2", "LT2_UV_Pool3")
+# names(normList) <- c("HT_K_VIS_Pool1", "HT_K_VIS_Pool2", "HT_K_VIS_Pool3",
+#                      "HT_K_UV_Pool1", "HT_K_UV_Pool2", "HT_K_UV_Pool3",
+#                      "HT_I_VIS_Pool1", "HT_I_VIS_Pool2", "HT_I_VIS_Pool3",
+#                      "HT_I_UV_Pool1", "HT_I_UV_Pool2", "HT_I_UV_Pool3",
+#                      "LT_C_VIS_Pool1", "LT_C_VIS_Pool2", "LT_C_VIS_Pool3",
+#                      "LT_C_UV_Pool1", "LT_C_UV_Pool2", "LT_C_UV_Pool3",
+#                      "LT_A_VIS_Pool1", "LT_A_VIS_Pool2", "LT_A_VIS_Pool3",
+#                      "LT_A_UV_Pool1", "LT_A_UV_Pool2", "LT_A_UV_Pool3")
+names(normList) <- c("HT_K_VIS_Pool1", "HT_K_VIS_Pool2", "HT_K_VIS_Pool3",
+                     "HT_K_UV_Pool1", "HT_K_UV_Pool2", "HT_K_UV_Pool3",
+                     "HT_I_VIS_Pool1", "HT_I_VIS_Pool2", "HT_I_VIS_Pool3",
+                     "HT_I_UV_Pool1", "HT_I_UV_Pool2", "HT_I_UV_Pool3",
+                     "LT_C_VIS_Pool1", "LT_C_VIS_Pool2", "LT_C_VIS_Pool3",
+                     "LT_C_UV_Pool1", "LT_C_UV_Pool2", "LT_C_UV_Pool3",
+                     "LT_A_VIS_Pool1", "LT_A_VIS_Pool2", "LT_A_VIS_Pool3",
+                     "LT_A_UV_Pool1", "LT_A_UV_Pool2", "LT_A_UV_Pool3")
 
 # import DE gene IDs
 inFile <- paste(deDir, "glmQLF_2WayANOVA_DEGs_geneIDs_unique.csv", sep="/")
@@ -119,8 +127,8 @@ for (modColor in 1:length(unique(moduleColors))){
 exp_factor <- data.frame(sample = gsub('.{6}$', '', names(normList)))
 rownames(exp_factor) <- names(normList)
 exp_colour = list(
-  sample = c(HT1_VIS = "#E69F00", HT1_UV = "#D55E00", HT2_VIS = "#CC79A7", HT2_UV = plotColors[6], 
-             LT1_VIS = plotColors[7], LT1_UV = plotColors[4], LT2_VIS = "#56B4E9", LT2_UV = plotColors[5])
+  sample = c(HT_K_VIS = "#E69F00", HT_K_UV = "#D55E00", HT_I_VIS = "#CC79A7", HT_I_UV = plotColors[6], 
+             LT_C_VIS = plotColors[7], LT_C_UV = plotColors[4], LT_A_VIS = "#56B4E9", LT_A_UV = plotColors[5])
 )
 
 # create heatmaps for each module
@@ -138,7 +146,7 @@ for (modColor in 1:length(unique(moduleColors))){
                      )
             )
   # save plot to a file
-  ggsave(paste(unique(moduleColors)[modColor], "heatmap.png", sep = "_"), bg = "white")
+  ggsave(paste(unique(moduleColors)[modColor], "heatmap.png", sep = "_"), bg = "white", width = 30, height = 20, units = "cm")
 }
 
 # create heatmaps for DE genes in each module
@@ -157,7 +165,7 @@ for (modColor in 1:length(unique(moduleColors))){
     )
     )
     # save plot to a file
-    ggsave(paste(unique(moduleColors)[modColor], "DEGs_heatmap.png", sep = "_"), bg = "white")
+    ggsave(paste(unique(moduleColors)[modColor], "DEGs_heatmap.png", sep = "_"), bg = "white", width = 30, height = 20, units = "cm")
   }
 }
 
@@ -177,7 +185,7 @@ for (modColor in 1:length(unique(moduleColors))){
     )
     )
     # save plot to a file
-    ggsave(paste(unique(moduleColors)[modColor], "treatment_DEGs_heatmap.png", sep = "_"), bg = "white")
+    ggsave(paste(unique(moduleColors)[modColor], "treatment_DEGs_heatmap.png", sep = "_"), bg = "white", width = 30, height = 20, units = "cm")
   }
 }
 
@@ -197,7 +205,7 @@ for (modColor in 1:length(unique(moduleColors))){
     )
     )
     # save plot to a file
-    ggsave(paste(unique(moduleColors)[modColor], "tolerance_DEGs_heatmap.png", sep = "_"), bg = "white")
+    ggsave(paste(unique(moduleColors)[modColor], "tolerance_DEGs_heatmap.png", sep = "_"), bg = "white", width = 30, height = 20, units = "cm")
   }
 }
 
@@ -217,7 +225,7 @@ for (modColor in 1:length(unique(moduleColors))){
     )
     )
     # save plot to a file
-    ggsave(paste(unique(moduleColors)[modColor], "interaction_DEGs_heatmap.png", sep = "_"), bg = "white")
+    ggsave(paste(unique(moduleColors)[modColor], "interaction_DEGs_heatmap.png", sep = "_"), bg = "white", width = 30, height = 20, units = "cm")
   }
 }
 
@@ -230,7 +238,7 @@ as.ggplot(pheatmap(DEGs_treatment_normList, annotation_col = exp_factor, annotat
 )
 )
 # save plot to a file
-ggsave("treatment_DEGs_heatmap.png", bg = "white")
+ggsave("treatment_DEGs_heatmap.png", bg = "white", width = 30, height = 20, units = "cm")
 
 # create heatmap of tolerance DE genes normalized log expression
 as.ggplot(pheatmap(DEGs_tolerance_normList, annotation_col = exp_factor, annotation_colors = exp_colour,
@@ -241,7 +249,7 @@ as.ggplot(pheatmap(DEGs_tolerance_normList, annotation_col = exp_factor, annotat
 )
 )
 # save plot to a file
-ggsave("tolerance_DEGs_heatmap.png", bg = "white")
+ggsave("tolerance_DEGs_heatmap.png", bg = "white", width = 30, height = 20, units = "cm")
 
 # create heatmap of interaction DE genes normalized log expression
 as.ggplot(pheatmap(DEGs_interaction_normList, annotation_col = exp_factor, annotation_colors = exp_colour,
@@ -252,7 +260,7 @@ as.ggplot(pheatmap(DEGs_interaction_normList, annotation_col = exp_factor, annot
 )
 )
 # save plot to a file
-ggsave("interaction_DEGs_heatmap.png", bg = "white")
+ggsave("interaction_DEGs_heatmap.png", bg = "white", width = 30, height = 20, units = "cm")
 
 # create heatmaps for interaction DE genes in each module
 for (modColor in 1:length(unique(moduleColors))){
@@ -270,7 +278,7 @@ for (modColor in 1:length(unique(moduleColors))){
     )
     )
     # save plot to a file
-    ggsave(paste(unique(moduleColors)[modColor], "positive_DEGs_heatmap.png", sep = "_"), bg = "white")
+    ggsave(paste(unique(moduleColors)[modColor], "positive_heatmap.png", sep = "_"), bg = "white", width = 30, height = 20, units = "cm")
   }
 }
 
@@ -283,7 +291,7 @@ as.ggplot(pheatmap(pos_treatment_normList, annotation_col = exp_factor, annotati
 )
 )
 # save plot to a file
-ggsave("treatment_positive_DEGs_heatmap.png", bg = "white")
+ggsave("treatment_positive_DEGs_heatmap.png", bg = "white", width = 30, height = 20, units = "cm")
 
 # create heatmap of positive genes normalized log expression
 as.ggplot(pheatmap(pos_tolerance_normList, annotation_col = exp_factor, annotation_colors = exp_colour,
@@ -294,7 +302,7 @@ as.ggplot(pheatmap(pos_tolerance_normList, annotation_col = exp_factor, annotati
 )
 )
 # save plot to a file
-ggsave("tolerance_positive_DEGs_heatmap.png", bg = "white")
+ggsave("tolerance_positive_DEGs_heatmap.png", bg = "white", width = 30, height = 20, units = "cm")
 
 # create heatmap of positive genes normalized log expression
 as.ggplot(pheatmap(pos_interaction_normList, annotation_col = exp_factor, annotation_colors = exp_colour,
@@ -305,7 +313,7 @@ as.ggplot(pheatmap(pos_interaction_normList, annotation_col = exp_factor, annota
 )
 )
 # save plot to a file
-ggsave("interaction_positive_DEGs_heatmap.png", bg = "white")
+ggsave("interaction_positive_DEGs_heatmap.png", bg = "white", width = 30, height = 20, units = "cm")
 
 # create heatmap of positive DE genes normalized log expression
 as.ggplot(pheatmap(pos_DEGs_normList, annotation_col = exp_factor, annotation_colors = exp_colour,
@@ -316,7 +324,7 @@ as.ggplot(pheatmap(pos_DEGs_normList, annotation_col = exp_factor, annotation_co
 )
 )
 # save plot to a file
-ggsave("positive_DEGs_heatmap.png", bg = "white")
+ggsave("positive_DEGs_heatmap.png", bg = "white", width = 30, height = 20, units = "cm")
 
 # create heatmap of positive interaction and treatment genes normalized log expression
 as.ggplot(pheatmap(pos_treatment_interaction_normList, annotation_col = exp_factor, annotation_colors = exp_colour,
@@ -327,4 +335,4 @@ as.ggplot(pheatmap(pos_treatment_interaction_normList, annotation_col = exp_fact
 )
 )
 # save plot to a file
-ggsave("positive_interaction_treatment_DEGs_heatmap.png", bg = "white")
+ggsave("positive_interaction_treatment_DEGs_heatmap.png", bg = "white", width = 30, height = 20, units = "cm")
