@@ -1,4 +1,4 @@
-# TranscriptomeAnalysisPipeline_DaphniaUVTolerance
+# D melanica UV
 This is a repository for scripts used to analyze short paired-end RNA sequence reads for Daphnia UV tolerance treatments.
 
 ## RNA-seq Analysis Pipeline - Genome Guided Assembly
