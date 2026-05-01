@@ -1,5 +1,5 @@
 # D melanica UV
-This is a repository for scripts used to analyze short paired-end RNA sequence reads for Daphnia UV tolerance treatments.
+The workflow to analyze short paired-end RNA sequence reads for Daphnia melanica UV exposure treatments can be found [HERE](https://github.com/ElizabethBrooks/D_melanica_UV) on GitHub.
 
 ## RNA-seq Analysis Pipeline - Genome Guided Assembly
 ![RNA-seq Analysis Pipeline - Genome Guided Assembly](RNASeqWorkflow_dmelUV.png)
