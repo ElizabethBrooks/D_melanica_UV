@@ -1,8 +1,9 @@
 # D melanica UV
+
 The workflow to analyze short paired-end RNA sequence reads for Daphnia melanica UV exposure treatments can be found [HERE](https://github.com/ElizabethBrooks/D_melanica_UV) on GitHub.
 
-## RNA-seq Analysis Pipeline - Genome Guided Assembly
-![RNA-seq Analysis Pipeline - Genome Guided Assembly](RNASeqWorkflow_dmelUV.png)
+## RNA-seq Analysis Pipeline - Genome Guided Analysis
+![RNA-seq Analysis Pipeline - Genome Guided Analysis](RNASeqWorkflow_dmelUV.png)
 
 ## Running Scripts
 * The input and output paths need to be set using the *inputPaths.txt* and *outputPaths.txt* files in the *InputData* directory.
