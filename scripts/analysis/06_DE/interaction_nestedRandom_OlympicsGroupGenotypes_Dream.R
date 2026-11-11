@@ -12,15 +12,24 @@ library(BiocParallel)
 library(tibble)
 library(rcartocolor)
 library(ggVennDiagram)
+library(pheatmap)
+library(ggplotify)
 
 # plotting Palettes
 # https://stackoverflow.com/questions/57153428/r-plot-color-combinations-that-are-colorblind-accessible
 # https://github.com/Nowosad/rcartocolor
-plotColors <- carto_pal(12, "Safe")
+defaultColors <- palette.colors(palette = "Okabe-Ito")
+blindColors <- c("#000000", "#999999", "#E69F00", "#56B4E9", "#009E73", 
+                 "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+safeColors <- carto_pal(12, "Safe")
+plotColors <- c(safeColors, blindColors, defaultColors)
 plotColorSubset <- c(plotColors[4], plotColors[5], plotColors[6], plotColors[7])
+colorList <- c(plotColors[1], plotColors[2])
+# view colors
+scales::show_col(plotColors)
 
 # set working directory
-workingDir="/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_14Oct2026/interaction_nested_random_group_genotype"
+workingDir="/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_9Nov2026/interaction_nested_random_group_genotype_LFC_0_FDR_0.05"
 dir.create(workingDir)
 setwd(workingDir)
 
@@ -47,10 +56,14 @@ targets$genotype <- gsub("Y023", "HT_I", targets$genotype)
 
 # set input FDR cutoff
 cutFDR <- 0.05
+#cutFDR <- 0.1
+#cutFDR <- 0.01
+#cutFDR <- 0.025
 
 # set LFC cut
-#cutFC <- 1.2
-cutLFC <- log2(1.2)
+#cutLFC <- 1.2
+#cutLFC <- log2(1.2)
+cutLFC <- 0
 
 # trim the data table to remove summary statistics
 countsTable <- head(inputTable, - 5)
@@ -284,6 +297,14 @@ interaction_out_file <- paste("treatment_group_edgeR", "FDR", cutFDR, "LFC", cut
 interaction_out_file <- paste(interaction_out_file, "csv", sep = ".")
 write.table(interaction_edgeR.filtered, file=interaction_out_file, sep=",", row.names=FALSE, quote=FALSE)
 
+# list of DEGs
+DEG_union <- union(treatment_dge_sig_tbl$gene, tolerance_dge_sig_tbl$gene)
+dream_DEGs <- data.frame(geneID = DEG_union)
+write.table(dream_DEGs, file="dream_results_DEGs.csv", sep=",", row.names=FALSE, quote=FALSE)
+
+# import non-grey module gene IDs
+module_genes <- read.csv("/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/WGCNA/Genotypes/OLYM_30_modules/non_grey/geneIDs.csv", header = FALSE)
+
 # create combined list of DE gene names
 treatment_list_venn <- list(dream = treatment_dge_sig_tbl$gene, edgeR = treatment_edgeR.filtered$gene)
 tolerance_list_venn <- list(dream = tolerance_dge_sig_tbl$gene, edgeR = tolerance_edgeR.filtered$gene)
@@ -292,43 +313,57 @@ dream_list_venn <- list(Treatment = treatment_dge_sig_tbl$gene, Tolerance = tole
 edgeR_list_venn <- list(Treatment = treatment_edgeR.filtered$gene, Tolerance = tolerance_edgeR.filtered$gene, Interaction = interaction_edgeR.filtered$gene)
 dream_positive_list_venn <- list(Treatment = treatment_dge_sig_tbl$gene, Tolerance = tolerance_dge_sig_tbl$gene, Positive = positive$geneID)
 edgeR_positive_list_venn <- list(Treatment = treatment_edgeR.filtered$gene, Tolerance = tolerance_edgeR.filtered$gene, Interaction = interaction_edgeR.filtered$gene, Positive = positive$geneID)
+dream_modules_positive_list_venn <- list(DEGs = dream_DEGs$geneID, Modules = module_genes$V1, Positive = positive$geneID)
 
 # create venn diagrams
 
-jpeg("treatment_results_venn.jpg")
-ggVennDiagram(treatment_list_venn, label_alpha=0.25, category.names = c("dream","edgeR")) +
-  scale_colour_discrete(type = plotColorSubset)
-dev.off()
+file <- "treatment_results_venn.png"
+outVenn <- ggVennDiagram(treatment_list_venn, label_alpha=0.25, category.names = c("dream","edgeR")) +
+  scale_x_continuous(expand = expansion(mult = .2)) +
+  scale_fill_gradientn(colors = colorList)
+ggsave(file, plot = outVenn, device = "png")
 
-jpeg("tolerance_results_venn.jpg")
-ggVennDiagram(tolerance_list_venn, label_alpha=0.25, category.names = c("dream","edgeR")) +
-  scale_colour_discrete(type = plotColorSubset)
-dev.off()
+file <- "tolerance_results_venn.png"
+outVenn <- ggVennDiagram(tolerance_list_venn, label_alpha=0.25, category.names = c("dream","edgeR")) +
+  scale_x_continuous(expand = expansion(mult = .2)) +
+  scale_fill_gradientn(colors = colorList)
+ggsave(file, plot = outVenn, device = "png")
 
-jpeg("interaction_results_venn.jpg")
-ggVennDiagram(interaction_list_venn, label_alpha=0.25, category.names = c("dream","edgeR")) +
-  scale_colour_discrete(type = plotColorSubset)
-dev.off()
+file <- "interaction_results_venn.png"
+outVenn <- ggVennDiagram(interaction_list_venn, label_alpha=0.25, category.names = c("dream","edgeR")) +
+  scale_x_continuous(expand = expansion(mult = .2)) +
+  scale_fill_gradientn(colors = colorList)
+ggsave(file, plot = outVenn, device = "png")
 
-jpeg("dream_results_venn.jpg")
-ggVennDiagram(dream_list_venn, label_alpha=0.25, category.names = c("Treatment","Tolerance")) +
-  scale_colour_discrete(type = plotColorSubset)
-dev.off()
+file <- "dream_results_venn.png"
+outVenn <- ggVennDiagram(dream_list_venn, label_alpha=0.25, category.names = c("Treatment","Tolerance")) +
+  scale_x_continuous(expand = expansion(mult = .2)) +
+  scale_fill_gradientn(colors = colorList)
+ggsave(file, plot = outVenn, device = "png")
 
-jpeg("edgeR_results_venn.jpg")
-ggVennDiagram(edgeR_list_venn, label_alpha=0.25, category.names = c("Treatment","Tolerance", "Interaction")) +
-  scale_colour_discrete(type = plotColorSubset)
-dev.off()
+file <- "edgeR_results_venn.png"
+outVenn <- ggVennDiagram(edgeR_list_venn, label_alpha=0.25, category.names = c("Treatment","Tolerance", "Interaction")) +
+  scale_x_continuous(expand = expansion(mult = .2)) +
+  scale_fill_gradientn(colors = colorList)
+ggsave(file, plot = outVenn, device = "png")
 
-jpeg("dream_positive_venn.jpg")
-ggVennDiagram(dream_positive_list_venn, label_alpha=0.25, category.names = c("Treatment","Tolerance", "Positive")) +
-  scale_colour_discrete(type = plotColorSubset)
-dev.off()
+file <- "dream_positive_venn.png"
+outVenn <- ggVennDiagram(dream_positive_list_venn, label_alpha=0.25, category.names = c("Treatment","Tolerance", "Positive")) +
+  scale_x_continuous(expand = expansion(mult = .2)) +
+  scale_fill_gradientn(colors = colorList)
+ggsave(file, plot = outVenn, device = "png")
 
-jpeg("edgeR_positive_venn.jpg")
-ggVennDiagram(edgeR_positive_list_venn, label_alpha=0.25, category.names = c("Treatment","Tolerance", "Interaction", "Positive")) +
-  scale_colour_discrete(type = plotColorSubset)
-dev.off()
+file <- "edgeR_positive_venn.png"
+outVenn <- ggVennDiagram(edgeR_positive_list_venn, label_alpha=0.25, category.names = c("Treatment","Tolerance", "Interaction", "Positive")) +
+  scale_x_continuous(expand = expansion(mult = .2)) +
+  scale_fill_gradientn(colors = colorList)
+ggsave(file, plot = outVenn, device = "png")
+
+file <- "dream_modules_positive_venn.png"
+outVenn <- ggVennDiagram(dream_modules_positive_list_venn, label_alpha=0.25, category.names = c("DEGs", "Modules", "Positive")) +
+  scale_x_continuous(expand = expansion(mult = .2)) +
+  scale_fill_gradientn(colors = colorList)
+ggsave(file, plot = outVenn, device = "png")
 
 # get set intersections
 edgeR_treatment_positive <- intersect(treatment_edgeR.filtered$gene, positive$geneID)
@@ -343,7 +378,7 @@ write.table(edgeR_interaction_positive, file="edgeR_interaction_positive.csv", s
 write.table(dream_treatment_positive, file="dream_treatment_positive.csv", sep=",", row.names=FALSE, quote=FALSE)
 
 # heatmap data
-#logcounts = cpm(list, log=TRUE)
+logcounts = cpm(list, normalized.lib.sizes=TRUE, log=TRUE)
 
 # subset counts table by DE gene set
 DGESubset_treatment <- treatment_dge_sig_tbl[!grepl(plotColors[5], treatment_dge_sig_tbl$colorDE),]
@@ -362,3 +397,107 @@ dev.off()
 jpeg("tolerance_heatmap.jpg")
 heatmap(logcountsSubset_tolerance, margins = c(8, 1), labRow = FALSE)
 dev.off()
+
+# update sample names for plotting
+
+
+# sample plotting colors
+exp_colour = list(
+  Sample = c(HT_I_UV = "#CC79A7", HT_I_VIS = plotColors[6],
+             HT_K_UV = "#E69F00", HT_K_VIS = "#D55E00",  
+             LT_A_UV = "#56B4E9", LT_A_VIS = plotColors[5],
+             LT_C_UV = plotColors[7], LT_C_VIS = plotColors[4]
+  )
+)
+
+# create data frame with the experimental design layout
+exp_factor <- data.frame(Sample = c(paste(targets$genotype, targets$treatment, sep="_")))
+rownames(exp_factor) <- colnames(logcountsSubset_treatment)
+
+# create a symmetric break vector centered at 0
+n_colors <- 100
+data_colors <- colorRampPalette(c(plotColors[16], "white", plotColors[2]))(n_colors)
+break_length <- n_colors + 1
+
+# Treatment Effect
+# define the data range
+data_min <- min(logcountsSubset_treatment)
+data_max <- max(logcountsSubset_treatment)
+# ensure that 0 is white
+data_breaks <- c(
+  seq(data_min, 0, length.out = ceiling(n_colors / 2) + 1),
+  seq(data_max / n_colors, data_max, length.out = floor(n_colors / 2))
+)
+# create heatmap
+as.ggplot(
+  pheatmap(logcountsSubset_treatment, 
+           annotation_col = exp_factor, 
+           annotation_colors = exp_colour,
+           #main="Heatmap of Treatment Effect DE Genes",
+           #color = colorRampPalette(c(plotColors[16], "white", plotColors[2]))(100),
+           color = data_colors,
+           breaks = data_breaks,
+           show_rownames = FALSE,
+           show_colnames = FALSE,
+           fontsize = 12
+  )
+)
+ggsave("treatment_pheatmap.png", bg = "white", width = 30, height = 20, units = "cm")
+# create scaled heatmap
+as.ggplot(
+  pheatmap(logcountsSubset_treatment, 
+           scale="row", 
+           annotation_col = exp_factor, 
+           annotation_colors = exp_colour,
+           #main="Heatmap of Treatment Effect DE Genes",
+           #color = colorRampPalette(c(plotColors[16], "white", plotColors[2]))(100),
+           color = data_colors,
+           #breaks = data_breaks,
+           show_rownames = FALSE,
+           show_colnames = FALSE,
+           fontsize = 12
+  )
+)
+ggsave("treatment_scaled_pheatmap.png", bg = "white", width = 30, height = 20, units = "cm")
+
+# Tolerance Effect
+# define the data range
+data_min <- min(logcountsSubset_tolerance)
+data_max <- max(logcountsSubset_tolerance)
+# ensure that 0 is white
+data_breaks <- c(
+  seq(data_min, 0, length.out = ceiling(n_colors / 2) + 1),
+  seq(data_max / n_colors, data_max, length.out = floor(n_colors / 2))
+)
+# create heatmap
+as.ggplot(
+  pheatmap(logcountsSubset_tolerance, 
+           annotation_col = exp_factor,
+           annotation_colors = exp_colour,
+           #main="Heatmap of Tolerance Effect DE Genes", 
+           #color = colorRampPalette(c(plotColors[16], "white", plotColors[2]))(100),
+           color = data_colors,
+           breaks = data_breaks,
+           show_rownames = FALSE,
+           show_colnames = FALSE,
+           fontsize = 12
+  )
+)
+ggsave("tolerance_pheatmap.png", bg = "white", width = 30, height = 20, units = "cm")
+# create scaled heatmap
+as.ggplot(
+  pheatmap(logcountsSubset_tolerance, 
+           scale="row", 
+           annotation_col = exp_factor,
+           annotation_colors = exp_colour,
+           #main="Heatmap of Tolerance Effect DE Genes", 
+           #color = colorRampPalette(c(plotColors[16], "white", plotColors[2]))(100),
+           color = data_colors,
+           #breaks = data_breaks,
+           show_rownames = FALSE,
+           show_colnames = FALSE,
+           fontsize = 12
+  )
+)
+ggsave("tolerance_scaled_pheatmap.png", bg = "white", width = 30, height = 20, units = "cm")
+

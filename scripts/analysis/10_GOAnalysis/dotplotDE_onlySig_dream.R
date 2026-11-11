@@ -17,7 +17,8 @@ plotColorSubset <- c(plotColors[5], plotColors[6])
 args = commandArgs(trailingOnly=TRUE)
 
 # retrieve working directory
-workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_14Oct2026/interaction_nested_random_group_genotype/GOAnalysis"
+#workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_14Oct2026/interaction_nested_random_group_genotype/GOAnalysis"
+workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_9Nov2026/interaction_nested_random_group_genotype_LFC_0_FDR_0.05/GOAnalysis"
 
 # set working directory
 setwd(workingDir)
@@ -27,11 +28,16 @@ BP_GO_terms <- read.csv('treatment_BP_sigGO_terms.csv', row.names = 1)
 MF_GO_terms <- read.csv('treatment_MF_sigGO_terms.csv', row.names = 1)
 CC_GO_terms <- read.csv('treatment_CC_sigGO_terms.csv', row.names = 1)
 
+# remove rows with non-numeric values
+#BP_GO_terms <- BP_GO_terms[!is.na(as.numeric(BP_GO_terms$Annotated)), ]
+#MF_GO_terms <- MF_GO_terms[!is.na(as.numeric(MF_GO_terms$Annotated)), ]
+#CC_GO_terms <- CC_GO_terms[!is.na(as.numeric(CC_GO_terms$Annotated)), ]
+
 ## treatment effect
 # filter for top 5 significant terms
-BP_GO_sig <- BP_GO_terms[1:5, ]
-MF_GO_sig <- MF_GO_terms[1:5, ]
-CC_GO_sig <- CC_GO_terms[1:5, ]
+BP_GO_sig <- BP_GO_terms[1:10, ]
+MF_GO_sig <- MF_GO_terms[1:10, ]
+CC_GO_sig <- CC_GO_terms[1:10, ]
 
 # add a column labeling the effect to each GO term set
 BP_plot_table <- cbind("Effect" = 'Treatment', BP_GO_sig)
@@ -63,7 +69,7 @@ plot_table <- na.omit(all_plot_table)
 facet <- factor(plot_table$GO_cat, levels = c('BP', 'CC', 'MF'))
 
 # create dot plot
-dotplot <- ggplot(data = plot_table, aes(x = "Treatment", y = Term, size = Significant, color = as.numeric(weightFisher))) + 
+dotplot <- ggplot(data = plot_table, aes(x = "Treatment", y = Term, size = Significant, color = weightFisher)) + 
   facet_wrap(facet, ncol = 1, nrow = length(facet), scales = 'free', strip.position="right") +
   geom_point() +
   scale_color_gradientn(colors = plotColorSubset) +
@@ -76,6 +82,6 @@ dotplot <- ggplot(data = plot_table, aes(x = "Treatment", y = Term, size = Signi
 dotplot
 
 # save the plot to a PDF file
-ggsave('dotplot_sigGO.pdf', plot = dotplot, device = 'pdf')
+ggsave('dotplot_sigGO.pdf', plot = dotplot, device = 'pdf', bg = "white", width = 30, height = 20, units = "cm")
 
 

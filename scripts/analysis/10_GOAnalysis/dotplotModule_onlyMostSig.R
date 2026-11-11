@@ -20,31 +20,32 @@ options(scipen = 999)
 args = commandArgs(trailingOnly=TRUE)
 
 # retrieve working directory
-workingDir <- args[1]
+#workingDir <- args[1]
 #workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/WGCNA/Genotypes/GOAnalysis_ks_OLYM_30"
+workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/WGCNA_9Nov2026/Genotypes/GOAnalysis_ks_OLYM_30"
 
 # set working directory
 setwd(workingDir)
 
 # retrieve subset tag
-set <- args[2]
-#set <- "OLYM"
+#set <- args[2]
+set <- "OLYM"
 
 # set the minimum module size
-minModSize <- args[3]
-#minModSize <- "30"
+#minModSize <- args[3]
+minModSize <- "30"
 
 # retrieve WGCNA directory
-inDir <- args[4]
-#inDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/WGCNA/Genotypes"
+#inDir <- args[4]
+inDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/WGCNA/Genotypes"
 
 # import positively selected gene set p-values
-positiveTable <- read.csv(file=args[5], row.names="color")
-#positiveTable <- read.csv(file="/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/selectionTests/Genotypes/fisherTest_positiveSelection_modules.csv", row.names="color")
+#positiveTable <- read.csv(file=args[5], row.names="color")
+positiveTable <- read.csv(file="/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/selectionTests/Genotypes/fisherTest_positiveSelection_modules.csv", row.names="color")
 
 # import effect ANOVA p-values
-effectTable <- read.csv(file=args[6], row.names="module")
-#effectTable <- read.csv(file="/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/WGCNA/Genotypes/DEGsANOVA_OLYM_30/aov_summary_pValues.csv", row.names="module")
+#effectTable <- read.csv(file=args[6], row.names="module")
+effectTable <- read.csv(file="/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/WGCNA/Genotypes/DEGsANOVA_OLYM_30/aov_summary_pValues.csv", row.names="module")
 
 # set the full subset tag name
 tag <- paste(set, minModSize, sep="_")

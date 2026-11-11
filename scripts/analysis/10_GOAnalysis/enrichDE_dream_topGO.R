@@ -18,9 +18,11 @@ options(stringsAsFactors = FALSE)
 args = commandArgs(trailingOnly=TRUE)
 
 # retrieve working directory
-workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_14Oct2026/interaction_nested_random_group_genotype/GOAnalysis"
+#workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_14Oct2026/interaction_nested_random_group_genotype/GOAnalysis"
+workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_9Nov2026/interaction_nested_random_group_genotype_LFC_0_FDR_0.05/GOAnalysis"
 
-# set working directory
+# create and set working directory
+dir.create(workingDir)
 setwd(workingDir)
 
 # retrieve set tag

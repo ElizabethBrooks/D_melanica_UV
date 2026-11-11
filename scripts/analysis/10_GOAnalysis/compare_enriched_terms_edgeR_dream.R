@@ -18,20 +18,21 @@ plotColorSubset <- c(plotColors[5], plotColors[6])
 args = commandArgs(trailingOnly=TRUE)
 
 # retrieve working directory
-workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_14Oct2026/interaction_nested_random_group_genotype/GOAnalysis"
+#workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_14Oct2026/interaction_nested_random_group_genotype/GOAnalysis"
+workingDir <- "/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis_9Nov2026/interaction_nested_random_group_genotype_LFC_0_FDR_0.05/GOAnalysis"
 
 # set working directory
 setwd(workingDir)
 
 # read in data on significant GO terms (BP, MF, and CC) for each effect 
-dream_BP_GO_terms <- read.csv('tolerance_BP_sigGO_terms.csv', row.names = 1)
-dream_MF_GO_terms <- read.csv('tolerance_MF_sigGO_terms.csv', row.names = 1)
-dream_CC_GO_terms <- read.csv('tolerance_CC_sigGO_terms.csv', row.names = 1)
+dream_BP_GO_terms <- read.csv('treatment_BP_sigGO_terms.csv', row.names = 1)
+dream_MF_GO_terms <- read.csv('treatment_MF_sigGO_terms.csv', row.names = 1)
+dream_CC_GO_terms <- read.csv('treatment_CC_sigGO_terms.csv', row.names = 1)
 
 # retrieve previous results
-edgeR_BP_GO_terms <- read.csv('/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis/Genotypes/GOAnalysis_fisher/tolerance_BP_sigGO_terms.csv', row.names = 1)
-edgeR_MF_GO_terms <- read.csv('/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis/Genotypes/GOAnalysis_fisher/tolerance_MF_sigGO_terms.csv', row.names = 1)
-edgeR_CC_GO_terms <- read.csv('/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis/Genotypes/GOAnalysis_fisher/tolerance_CC_sigGO_terms.csv', row.names = 1)
+edgeR_BP_GO_terms <- read.csv('/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis/Genotypes/GOAnalysis_fisher/treatment_BP_sigGO_terms.csv', row.names = 1)
+edgeR_MF_GO_terms <- read.csv('/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis/Genotypes/GOAnalysis_fisher/treatment_MF_sigGO_terms.csv', row.names = 1)
+edgeR_CC_GO_terms <- read.csv('/Users/bamflappy/PfrenderLab/OLYM_dMelUV/KAP4/NCBI/GCF_021134715.1/Biostatistics/DEAnalysis/Genotypes/GOAnalysis_fisher/treatment_CC_sigGO_terms.csv', row.names = 1)
 
 # filter tables
 dream_BP_GO_terms_filtered <- dream_BP_GO_terms[grepl("GO:", rownames(dream_BP_GO_terms)), ]
@@ -48,17 +49,17 @@ CC_list_venn <- list(dream = rownames(dream_CC_GO_terms_filtered), edgeR = rowna
 
 # create venn diagrams
 
-jpeg("BP_results_venn.jpg")
+jpeg("treatment_BP_results_venn.jpg")
 ggVennDiagram(BP_list_venn, label_alpha=0.25, category.names = c("dream","edgeR")) +
   scale_colour_discrete(type = plotColorSubset)
 dev.off()
 
-jpeg("MF_results_venn.jpg")
+jpeg("treatment_MF_results_venn.jpg")
 ggVennDiagram(MF_list_venn, label_alpha=0.25, category.names = c("dream","edgeR")) +
   scale_colour_discrete(type = plotColorSubset)
 dev.off()
 
-jpeg("CC_results_venn.jpg")
+jpeg("treatment_CC_results_venn.jpg")
 ggVennDiagram(CC_list_venn, label_alpha=0.25, category.names = c("dream","edgeR")) +
   scale_colour_discrete(type = plotColorSubset)
 dev.off()
